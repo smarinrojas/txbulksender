@@ -1,5 +1,5 @@
 {
-    "active_network" : "columbusX",
+    "active_network" : "caminolocal",
     "camino":
     {
         "rpc_nodes" : ["HTTP://127.0.0.1:9650"],
@@ -11,21 +11,26 @@
         "gas_price" : "50000000000",
         "gas_limit" : "23912"
     },
-    "caminoLocal":
+    "caminolocal":
     {
         "rpc_nodes" : 
-            [
-                "http://127.0.0.1:9650",
-                "http://127.0.0.1:9652",
-                "http://127.0.0.1:9654",
-                "http://127.0.0.1:9656",
-                "http://127.0.0.1:9658"
+        [
+                "http://127.0.0.1:9650"
         ],
-        "transaccion_load" : 5,
-        "tries" : 5,
-        "private_key" : "56289e99c94b6912bfc12adc093c9b51124f0dc54ac7a766b2bc5ccf558d8027",
-        "contract_address" : "0xb6a59DAEB45eB5fEBA2F5E84719cBd58cbFD3F2b",
-        "account_address" : "0x8db97C7cEcE249c2b98bDC0226Cc4C2A57BF52FC",
+        "transaccion_load" : 1,
+        "chain" : "X",
+        "tries" : 1,
+        "try_delay_ms" : 1000,
+        "private_keys" : 
+        [ 
+            "56289e99c94b6912bfc12adc093c9b51124f0dc54ac7a766b2bc5ccf558d8027" 
+        ],
+        "xchain_addresses" : 
+        [   "X-columbus1qzptq9fz3vmms847w7dqfpnffgyr3lze29mzv8",
+            "X-columbus18jma8ppw3nhx5r4ap8clazz0dps7rv5uktu4q6",
+            "X-columbus1tpgut7ewmejpy6hl5sxevpdk5nht7w2vj3tlup"
+        ],
+        "contract_address" : "0x1B5ABe40888adb1eB71E1Df41046e3004ae89886",
         "gas_price" : "50000000000",
         "gas_limit" : "21216"
     },
@@ -59,22 +64,6 @@
         "account_address" : "0x8db97C7cEcE249c2b98bDC0226Cc4C2A57BF52FC",
         "gas_price" : "50000000000",
         "gas_limit" : "200000"
-       
-    },
-    "columbusX":
-    {
-        "rpc_nodes" : 
-            [
-                "HTTP://127.0.0.1:9650/ext/bc/X/rpc",
-                "HTTP://127.0.0.1:9650/ext/bc/X/rpc",
-                "HTTP://127.0.0.1:9650/ext/bc/X/rpc"
-
-        ],
-        "transaccion_load" : 3,
-        "tries" : 1,
-        "addressTo" :[ "X-columbus1qzptq9fz3vmms847w7dqfpnffgyr3lze29mzv8",
-                       "X-columbus18jma8ppw3nhx5r4ap8clazz0dps7rv5uktu4q6",
-                       "X-columbus1tpgut7ewmejpy6hl5sxevpdk5nht7w2vj3tlup"]
        
     }
 }

@@ -1,9 +1,9 @@
 var Web3 = require("web3");
 var config = require("./config.json");
 var config = config[config.active_network];
-let web3_test = require("./buildtx");
+let buildtxX = require("./buildtxx");
+let buildtxC = require("./buildtxc");
 
-var start;
 async function main() {
 
   if (config.transaccion_load < config.rpc_nodes.length
@@ -12,61 +12,81 @@ async function main() {
     console.log("Transaction load and number of nodes must be a multiple of each other");
     return;
   }
+
+  var nonces = await getNoncesFromAccount();
+  console.log("initial nonces :", nonces);
+
+
   console.log("Starting execution...");
-
-  var nonce = await getNoncesFromAccount();
-  console.log("First nonce: " + nonce);
-
-  //record start time.
-  start = new Date().getTime();
-
   var counter = 0;
-  while(counter < config.tries){
-    var promisesToExecute = await getDistributedPromises(nonce);
-    console.log("Sending nonce ", nonce);
-    await runPromises(promisesToExecute, counter);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    nonce = nonce + config.transaccion_load;
-    console.log("Waiting 1 second..");
+  while(counter < config.tries)
+  {
+    await distributeAndRunPromises(nonce);
     counter++;
   }
 }
 
 async function getNoncesFromAccount() {
   const web3 = new Web3(config.rpc_nodes[0] + "/ext/bc/C/rpc");
-  return await web3.eth.getTransactionCount(config.account_address);
+  var nonces = [];
+  config.private_keys.forEach(async pk => {
+    var address = web3.eth.accounts.privateKeyToAccount(pk);
+    nonces.push(await web3.eth.getTransactionCount(address));
+  });
+
+  return nonces;
 }
 
-async function getDistributedPromises(nonce) {
-  var promises = [];
+async function distributeAndRunPromises(nonce) {
 
   var numberOfTransactionsPerNode =
-    config.transaccion_load / config.rpc_nodes.length;
+  config.transaccion_load / config.rpc_nodes.length;
 
-  config.rpc_nodes.forEach((node) => {
-    for (let index = 0; index < numberOfTransactionsPerNode; index++) {
-      promises.push(web3_test.buildTransaction(nonce, node));
-      nonce++;
+  config.rpc_nodes.forEach((node, i) => 
+  {
+    functions = [];
+    for (let index = 0; index < numberOfTransactionsPerNode; index++) 
+    {
+      nonce, node, config.private_keys[i]
+      functions.push([buildtxC.executeTransaction, { 'nonce' : nonce, 'node' : node, 'pk' : config.private_keys[i] }]);
+      count++;
     }
+    
+    runPromises(functions);
   });
 
-  return promises;
 }
 
-async function runPromises(promises, counter) {
+//call funcions in array in order
+async function runPromises(promises) {
+  for (const promise of promises) {
 
-  Promise.all(promises).then(function (results) {
-    var end = new Date().getTime();
-    elapsedSeconds = (end - start) / 1000;
-    console.log("Elapsed seconds: " + elapsedSeconds);
-    var blockNumbers = results.map(x => x.blockNumber);
-    console.log('blockNumbers > ' + blockNumbers.join());
+    var success = true;
+    
     try {
-      console.log('ok', counter + 1);
-    } catch (err) {
-      console.log(err);
+      var data = await promise[0](promise[1].nonce, promise[1].node, promise[1].pk);
     }
-  });
+    catch(e){
+      success = false;
+    }
+  
+    //print current time with ms
+    var d = new Date();
+    var n = d.getTime();
+    
+    logdata = n + "," + data.nodo + "," + data.user + "," + data.count + "," + success + "\n";
+
+    writeLog(data);
+  }
+}
+
+
+//write log with data from transaction
+function writeLog(data) {
+  var fs = require('fs');
+  var stream = fs.createWriteStream("log.txt", { flags: 'a' });
+  stream.write(data.nodo + " - " + data.user + " - " + data.count)
+  stream.end();
 }
 
 main();

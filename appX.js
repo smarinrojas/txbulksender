@@ -1,7 +1,7 @@
 var Web3 = require("web3");
 var config = require("./config.json");
 var config = config[config.active_network];
-let web3_test = require("./buildtxX");
+let web3_test = require("./buildtxx");
 
 var start;
 async function main() {
@@ -15,16 +15,13 @@ async function main() {
   console.log(config.addressTo)
   console.log("Starting execution...");
 
-  // var nonce = await getNoncesFromAccount();
-  // console.log("First nonce: " + nonce);
-
   //record start time.
   start = new Date().getTime();
 
   var counter = 0;
   while(counter < config.tries){
     var promisesToExecute = await getDistributedPromises();
-    // console.log("Sending nonce ", nonce);
+
     await runPromises(promisesToExecute, counter);
     await new Promise(resolve => {setTimeout(resolve, 1000)
     console.log(resolve)});
@@ -33,11 +30,6 @@ async function main() {
     counter++;
   }
 }
-
-// async function getNoncesFromAccount() {
-//   const web3 = new Web3(config.rpc_nodes[0] + "/ext/bc/X/rpc");
-//   return await web3.eth.getTransactionCount(config.account_address);
-// }
 
 async function getDistributedPromises() {
   var promises = [];
@@ -48,7 +40,6 @@ async function getDistributedPromises() {
   config.rpc_nodes.forEach((node,i) => {
     for (let index = 0; index < numberOfTransactionsPerNode; index++) {
       promises.push(web3_test.buildTransaction( node,config.addressTo[i]));
-      // nonce++;
     }
   });
 

@@ -1,9 +1,8 @@
 
 var request = require('request');
 
-const buildTransaction =  async (rpcnode,addressTo) => 
+const buildTransaction =  async (rpcnode, addressTo) => 
 {
-
     return new Promise(resolve => {
       request({
         'method': 'POST',

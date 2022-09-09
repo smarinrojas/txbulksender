@@ -3,7 +3,7 @@ var abi = require('./abi.json');
 var config = require("./config.json");
 var config = config[config.active_network];
 
-const buildTransaction =  async (nonce,rpcnode) => 
+const buildTransaction =  async (nonce,rpcnode,privateKey) => 
 {
     rpcnode = rpcnode + "/ext/bc/C/rpc";
     var web3 = new Web3(rpcnode, { transactionBlockTimeout: 2 });
@@ -11,7 +11,6 @@ const buildTransaction =  async (nonce,rpcnode) =>
     web3.eth.transactionPollingTimeout = 1000000;
     return new Promise((resolve, reject) => {
 
-        var privateKey = config.private_key;
         var address = web3.eth.accounts.privateKeyToAccount(privateKey);
         var addressFrom = address.address;
         var contractAddress = config.contract_address;
